@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <meta name="theme-color" content="#2c3e50">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="河北文旅">
+    <link rel="manifest" href="./manifest.json">
+    <title>河北文旅 - 燕赵大地 魅力河北</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        .navbar {
+            background-color: #2c3e50;
+            padding: 0.8rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+        .logo {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 0;
+            margin: 0;
+        }
+        .nav-links a, .nav-links .nav-btn, .dropbtn {
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.3s;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-family: inherit;
+            padding: 0.3rem 0.5rem;
+            display: inline-block;
+        }
+        .nav-links a:hover, .nav-links .nav-btn:hover, .dropbtn:hover {
+            color: #3498db;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            min-width: 180px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            z-index: 999;
+        }
+        .dropdown-content a {
+            color: #2c3e50;
+            padding: 0.8rem 1rem;
+            text-decoration: none;
+            display: block;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+        }
+        .dropdown-content a:hover {
+            background: #f7f9fb;
+            color: #3498db;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        .hero {
+            position: relative;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            background: #000;
+        }
+        .hero-video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            background: #000;
+        }
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .video-play-mask {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.15);
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        .video-play-mask.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .video-play-btn {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.25);
+            border: 2px solid rgba(255,255,255,0.7);
+            color: white;
+            font-size: 30px;
+            backdrop-filter: blur(4px);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            padding: 0 1rem;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .hero p {
+            font-size: 1.2rem;
+        }
+        .ranking-wrapper {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .ranking-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+        }
+        .ranking-header-bar h2 {
+            font-size: 1.3rem;
+        }
+        .toggle-icon {
+            font-size: 1.5rem;
+        }
+        .ranking-content {
+            display: block;
+        }
+        .ranking-header {
+            display: grid;
+            grid-template-columns: 60px 2fr 1fr 1fr;
+            background-color: #f4f4f4;
+            padding: 0.8rem;
+            font-weight: bold;
+            border-bottom: 2px solid #ddd;
+            font-size: 0.9rem;
+        }
+        .ranking-item {
+            display: grid;
+            grid-template-columns: 60px 2fr 1fr 1fr;
+            padding: 0.8rem;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+        }
+        .ranking-item:hover {
+            background-color: #f5f5f5;
+        }
+        .ranking-rank {
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .ranking-hot {
+            color: #e67e22;
+        }
+        .page-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+        }
+        .page-card h2 {
+            margin-bottom: 1rem;
+            color: #2c3e50;
+            font-size: 1.5rem;
+            border-left: 4px solid #3498db;
+            padding-left: 0.8rem;
+        }
+        .attractions-checkbox {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+        .attractions-checkbox label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .preset-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .preset-btn, .route-btn {
+            background-color: #e67e22;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+        .preset-btn:hover, .route-btn:hover {
+            background-color: #d35400;
+        }
+        .calc-result {
+            background-color: #f4f4f4;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .calc-result p {
+            margin: 0.3rem 0;
+        }
+        .food-category {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+        .food-category h3 {
+            background-color: #f8f9fa;
+            padding: 0.8rem;
+            font-weight: bold;
+            color: #e67e22;
+            border-left: 4px solid #e67e22;
+            margin-bottom: 1rem;
+        }
+        .food-grid-page {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.2rem;
+        }
+        .food-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #f0f0f0;
+        }
+        .food-card h4 {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        .food-card p {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+        .hotel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .hotel-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .hotel-card:hover {
+            transform: translateY(-3px);
+        }
+        .hotel-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+        .hotel-content {
+            padding: 1rem;
+        }
+        .hotel-content h3 {
+            margin-bottom: 0.3rem;
+            color: #2c3e50;
+        }
+        .hotel-location {
+            color: #e67e22;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+        .hotel-price {
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0.5rem 0;
+        }
+        .hotel-desc {
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.4;
+        }
+        .featured-title {
+            font-size: 1.8rem;
+            margin: 2rem 0 1rem;
+            text-align: center;
+            color: #2c3e50;
+        }
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        .featured-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .featured-card:hover {
+            transform: translateY(-5px);
+        }
+        .featured-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .featured-card-content {
+            padding: 1rem;
+        }
+        .featured-card h3 {
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: #3498db;
+            cursor: pointer;
+        }
+        .attraction-detail {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .detail-img {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+        }
+        .detail-content {
+            padding: 2rem;
+        }
+        .detail-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+            background: #f4f4f4;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        .info-item {
+            text-align: center;
+        }
+        .info-item h3 {
+            margin-bottom: 0.5rem;
+            color: #3498db;
+        }
+        .gallery {
+            margin: 2rem 0;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        .gallery-grid img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 3rem auto;
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            color: #2c3e50;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.7rem 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        .login-btn {
+            width: 100%;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+        .login-btn:hover {
+            background-color: #2980b9;
+        }
+        .register-link {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .register-link a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .hero {
+                height: 300px;
+            }
+            .ranking-header, .ranking-item {
+                grid-template-columns: 50px 1.5fr 1fr 1fr;
+                font-size: 0.8rem;
+            }
+            .attractions-checkbox {
+                grid-template-columns: 1fr;
+            }
+            .hotel-grid {
+                grid-template-columns: 1fr;
+            }
+            .food-grid-page {
+                grid-template-columns: 1fr;
+            }
+            .detail-content h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo" data-page="home">河北文旅</div>
+        <ul class="nav-links">
+            <li><a data-page="home">首页</a></li>
+            <li class="dropdown">
+                <span class="dropbtn">🏆 排名榜 ▼</span>
+                <div class="dropdown-content" id="rankingDropdown"></div>
+            </li>
+            <li><a data-page="food">🍜 美食</a></li>
+            <li><a data-page="plan">🗺️ 旅游规划</a></li>
+            <li><a data-page="hotel">🏨 住宿</a></li>
+            <li><a data-page="login">登录</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <div id="homePage" class="page active">
+        <div class="hero">
+            <video
+                autoplay
+                muted
+                loop
+                playsinline
+                webkit-playsinline
+                x5-playsinline
+                x5-video-player-type="h5"
+                x5-video-player-fullscreen="false"
+                preload="auto"
+                controls
+                class="hero-video"
+                id="heroVideo"
+                poster="https://picsum.photos/id/1018/1200/600"
+            >
+                <source id="heroVideoSource" src="https://video.699pic.com/videos/ll/vt/hj/llvTHjFv6kLXD23debW4OyWZwJxa_10s.mp4" >
+                您的浏览器不支持视频播放
+            </video>
+heroVideoSource.src
+            <div class="video-play-mask" id="videoPlayMask">
+                <div class="video-play-btn">▶</div>
+            </div>
+
+            <div class="hero-content">
+                <h1>燕赵大地 魅力河北</h1>
+                <p>探寻千年古韵，纵览太行风光，感受京津冀文旅新体验</p>
+            </div>
+        </div>
+
+        <div class="ranking-wrapper">
+            <div class="ranking-header-bar" id="rankingToggle">
+                <h2>📊 河北热门景点排行榜（综合评分与客流量）</h2>
+                <span class="toggle-icon" id="toggleIcon">▼</span>
+            </div>
+            <div class="ranking-content" id="rankingContent">
+                <div class="ranking-list">
+                    <div class="ranking-header">
+                        <span>排名</span><span>景点名称</span><span>综合推荐指数</span><span>日均客流量</span>
+                    </div>
+                    <div id="rankingList"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="featured-title">✨ 游客最推荐的河北景点 ✨</div>
+        <div class="featured-grid" id="featuredGrid"></div>
+    </div>
+
+    <div id="foodPage" class="page">
+        <div class="page-card">
+            <h2>🍜 燕赵美食荟萃</h2>
+            <p style="margin-bottom: 1.5rem; color: #666;">寻味河北 · 地道风味 · 历史传承</p>
+            <div id="foodPageContent"></div>
+        </div>
+    </div>
+
+    <div id="planPage" class="page">
+        <div class="page-card">
+            <h2>🗺️ 智能旅游线路规划</h2>
+            <div class="preset-buttons">
+                <button class="preset-btn" data-preset="heritage">🏯 世界遗产之旅</button>
+                <button class="preset-btn" data-preset="coast">🌊 海滨休闲之旅</button>
+                <button class="preset-btn" data-preset="mountain">⛰️ 太行山水之旅</button>
+                <button class="preset-btn" data-preset="clear">🗑️ 清空选择</button>
+            </div>
+            <div class="attractions-checkbox" id="attractionsCheckbox"></div>
+            <div class="calc-result" id="calcResult"></div>
+            <button class="route-btn" id="generateRouteBtn">🚗 生成高德线路规划</button>
+        </div>
+    </div>
+
+    <div id="hotelPage" class="page">
+        <div class="page-card">
+            <h2>🏨 精选住宿推荐</h2>
+            <p style="margin-bottom: 1rem; color: #666;">点击卡片可直接在高德地图中搜索宾馆位置</p>
+            <div class="hotel-grid" id="hotelGrid"></div>
+        </div>
+    </div>
+
+    <div id="detailContainer"></div>
+
+    <div id="loginPage" class="page">
+        <div class="login-container">
+            <h2>欢迎登录</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input type="text" id="username" placeholder="请输入用户名/手机号" required>
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" id="password" placeholder="请输入密码" required>
+                </div>
+                <button type="submit" class="login-btn">登录</button>
+                <div class="register-link">还没有账号？<a href="#" id="registerLink">立即注册</a></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer><p>&copy; 2026 河北文旅 | 数据来源：河北省文旅厅 & 游客调研报告</p></footer>
+
+<script>
+    const CACHE_VERSION = '20260325-1';
+
+    function withVersion(url) {
+        if (!url) return '';
+        return url.includes('?')
+            ? `${url}&v=${CACHE_VERSION}`
+            : `${url}?v=${CACHE_VERSION}`;
+    }
+
+    function escapeAttr(str) {
+        return String(str ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    function fallbackAttr(fallbackUrl) {
+        const safeFallback = escapeAttr(withVersion(fallbackUrl));
+        return `this.onerror=null;this.src='${safeFallback}'`;
+    }
+
+    const attractions = [
+        { id: 'chengde', name: '承德避暑山庄', hot: 98.7, traffic: '3.2万人次/日', duration: 5, price: 130,
+          img: 'https://www.bishushanzhuang.com.cn/Upload/album/0F85DEB9BB65F24912F99B1EA768BA0E.jpg', detailImg: 'https://www.bishushanzhuang.com.cn/Upload/album/0339DF0C17CFFD4987E804ADD6DD461F.jpg', extraImages: ['https://www.bishushanzhuang.com.cn/Upload/album/F367E336CA4832EC0094F70AEE719F8C.jpg','https://www.bishushanzhuang.com.cn/Upload/album/450DC36E83EE0E5F96490FDE28D32A02.jpg','https://www.bishushanzhuang.com.cn/Upload/album/0D89F58B2BB520FF9F2FA354D054BE25.jpg'],
+          description: '承德避暑山庄是世界文化遗产，国家5A级景区，清代皇帝夏季避暑和处理政务的场所，是中国现存最大的古典皇家园林。',
+          details: '山庄始建于1703年，历经康熙、雍正、乾隆三朝，耗时89年建成。分为宫殿区、湖泊区、平原区、山峦区四大部分，集南北园林艺术之大成。',
+          hours: '旺季(4-10月)：07:30-18:00<br>淡季(11-3月)：08:30-17:00', priceText: '旺季：130元/人<br>淡季：90元/人', durationText: '4-6小时',
+          features: ['世界文化遗产', '中国四大名园之一', '清代皇家园林典范'] },
+        { id: 'shanhai', name: '山海关', hot: 97.2, traffic: '2.8万人次/日', duration: 4, price: 120,
+          img: 'https://tse4-mm.cn.bing.net/th/id/OIP-C.iottKBSAwN5XwvZamXXqrgHaDh?w=323&h=166&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3', detailImg: 'https://m.tuniucdn.com/fb2/t1/G2/M00/3E/55/Cii-TFjFBqGIDgvnABsSQYOdu_sAAIemwJqxmIAGxJZ216_w600_h0_c0_t0.jpg', extraImages: ['https://img2.baidu.com/it/u=244351262,1875936043&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=667','https://img2.baidu.com/it/u=4074420877,1634441315&fm=253&app=138&f=JPEG?w=667&h=500','https://img1.baidu.com/it/u=2855092591,4058982502&fm=253&app=138&f=JPEG?w=1067&h=800'],
+          description: '山海关是明长城的东部起点，有“天下第一关”之称，国家5A级景区。',
+          details: '山海关始建于明洪武十四年（1381年），是万里长城唯一集山、海、关于一体的防御体系。',
+          hours: '08:00-17:30', priceText: '通票：120元/人', durationText: '3-4小时',
+          features: ['天下第一关', '明长城东部起点', '老龙头入海石城'] },
+        { id: 'baiyang', name: '白洋淀', hot: 95.3, traffic: '2.5万人次/日', duration: 6, price: 150,
+          img: 'https://img0.baidu.com/it/u=2852889699,2374547461&fm=253&app=120&f=JPEG?w=1205&h=800', detailImg: 'https://qcloud.dpfile.com/pc/0GID2jJ_OunGmmhEsQMPOExzYsd-tm-yg0SRy4DaPdoxBLWID-CXDCDzHwnl8rVp.jpg', extraImages: ['https://img2.baidu.com/it/u=4024295806,1456027346&fm=253&app=138&f=JPEG?w=1067&h=800','https://qcloud.dpfile.com/pc/mxc6ehuBf9EMEoBBW-Od4CLwg7nbLGm7a3R-IUd8sIeA3A68eIBgYttkq1hBHcPP.jpg','https://qcloud.dpfile.com/pc/6h2hNhrVw8D4FCX4zAP0Art7GG7_LJIrPMkrObFfwiu9ijqymj50mf1q0YCUXJ_W.jpg'],
+          description: '白洋淀是华北平原最大的淡水湖，国家5A级景区，素有“华北明珠”之称。',
+          details: '白洋淀总面积366平方公里，由143个淀泊和3700多条沟壕组成。',
+          hours: '08:00-18:00', priceText: '入淀费：40元/人<br>荷花大观园：50元/人', durationText: '1天',
+          features: ['华北明珠', '荷花大观园夜游', '小兵张嘎故乡'] },
+        { id: 'qingdong', name: '清东陵', hot: 96.1, traffic: '1.8万人次/日', duration: 4, price: 108,
+          img: 'https://gips2.baidu.com/it/u=448600857,2303259855&fm=3074&app=3074&f=JPEG', detailImg: 'https://qcloud.dpfile.com/pc/FNM8e2wf0elM-lTYpRBXn3-_4yF6NEcHnvSM6pSHAWIP5RYKbIKzVIZXPjmiITWW.jpg', extraImages: ['https://img0.baidu.com/it/u=2205218737,3192765039&fm=253&app=138&f=JPEG?w=1066&h=800','https://qcloud.dpfile.com/pc/Dxm4IZ8Y3wO0NWluh3N26I_x2MMs4awj2jh15KbVypL78ALYHNsplNTvZhwiAL68.jpg','https://img1.baidu.com/it/u=971591853,1450077261&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=981'],
+          description: '清东陵是中国现存规模最宏大、体系最完整的帝王陵墓建筑群，世界文化遗产。',
+          details: '清东陵始建于1661年，埋葬着顺治、康熙、乾隆、咸丰、同治等5位皇帝及15位皇后。',
+          hours: '08:30-17:00', priceText: '通票：108元/人', durationText: '3-4小时',
+          features: ['世界文化遗产', '清代帝王陵寝', '乾隆裕陵地宫'] },
+        { id: 'beidaihe', name: '北戴河海滨', hot: 97.8, traffic: '5万人次/日', duration: 5, price: 33,
+          img: 'https://media.bjnews.com.cn/image/2025/07/10/5607344251714217375.jpg', detailImg: 'https://media.bjnews.com.cn/image/2025/07/10/5607344372745053926.jpg', extraImages: ['https://gips1.baidu.com/it/u=3080623991,3471214924&fm=3074&app=3074&f=JPEG?w=1585&h=1050&type=normal&func=','https://img0.baidu.com/it/u=2454242342,1025517063&fm=253&app=138&f=JPEG?w=500&h=653','https://gips3.baidu.com/it/u=1538075573,936444723&fm=3074&app=3074&f=JPEG?w=1198&h=916&type=normal&func='],
+          description: '北戴河是闻名遐迩的避暑胜地，拥有长达22.5公里的海岸线。',
+          details: '北戴河海滨气候宜人，负氧离子含量高，是疗养、避暑的理想之地。',
+          hours: '全天开放', priceText: '鸽子窝公园：25元/人<br>老虎石：8元/人', durationText: '1-2天',
+          features: ['避暑胜地', '观鸟天堂', '滨海木栈道'] },
+        { id: 'yesanpo', name: '野三坡', hot: 94.5, traffic: '2.2万人次/日', duration: 6, price: 100,
+          img: 'https://miaobi-lite.bj.bcebos.com/miaobi/5mao/b%27LV8xNzMxMjM4OTQ2LjU4NDQ4XzE3MzEyMzg5NDcuNDUyODA4OV8xNzMxMjM4OTQ4LjM5MDMzNTg%3D%27/2.png', detailImg: 'https://miaobi-lite.bj.bcebos.com/miaobi/5mao/b%27LV8xNzMxMjM4OTQ2LjU4NDQ4XzE3MzEyMzg5NDcuNDUyODA4OV8xNzMxMjM4OTQ4LjM5MDMzNTg%3D%27/2.png', extraImages: ['https://qcloud.dpfile.com/pc/KVl8OQHpOc08FX4cX7mUproJCLH4gu-5NSUyNbO3SenPvyXpkEg0G51WSRUgRXWr.jpg','https://miaobi-lite.bj.bcebos.com/miaobi/5mao/b%27LV8xNzMxMjM4OTQ2LjU4NDQ4%27/0.png?authorization=bce-auth-v1%2FALTAKmda7zOvhZVbRzBLewvCMU%2F2024-11-10T11%3A42%3A27Z%2F-1%2F%2F5a72a0d7c8347d11e0f5656d43a6eced370dd1588807d49179b1d50d4d059764','https://img2.baidu.com/it/u=3869120624,928872117&fm=253&app=138&f=JPEG?w=500&h=653'],
+          description: '野三坡是国家级风景名胜区，以“雄、险、奇、幽”的自然景观著称。',
+          details: '野三坡由百里峡、鱼谷洞、龙门天关、白草畔等景区组成。',
+          hours: '08:00-17:30', priceText: '百里峡：100元/人', durationText: '1-2天',
+          features: ['北方小桂林', '百里峡山水画廊', '溶洞奇观'] },
+        { id: 'xibaipo', name: '西柏坡', hot: 93.2, traffic: '1.5万人次/日', duration: 3, price: 0,
+          img: 'https://pic.rmb.bdstatic.com/bjh/3ea27bc3388/241216/d8e0085a2d721ad0413aae27f90d900f.jpeg', detailImg: 'https://pic.rmb.bdstatic.com/bjh/3ea27bc3388/241216/1b12c1d10b1a6c710f7fbf78fe664fb7.jpeg', extraImages: ['https://img1.baidu.com/it/u=1699925779,3298040290&fm=253&app=138&f=JPEG?w=1613&h=800','https://img2.baidu.com/it/u=421312945,2914631220&fm=253&app=138&f=JPEG?w=1067&h=800','https://img1.baidu.com/it/u=2458184654,372160836&fm=253&app=138&f=JPEG?w=1067&h=800'],
+          description: '西柏坡是革命圣地，曾有“新中国从这里走来”的美誉。',
+          details: '西柏坡位于石家庄平山县，1948年至1949年，毛泽东等领导人在这里指挥了三大战役。',
+          hours: '09:00-17:00（周一闭馆）', priceText: '免费', durationText: '2-3小时',
+          features: ['革命圣地', '新中国从这里走来', '免费开放'] },
+        { id: 'wahuang', name: '娲皇宫', hot: 91.8, traffic: '1.2万人次/日', duration: 3, price: 70,
+          img: 'https://www.shexianwahuanggong.com/upload/202507/2025070915540252.jpg', detailImg: 'https://www.shexianwahuanggong.com/upload/202507/20250708112832599.jpg', extraImages: ['https://www.shexianwahuanggong.com/upload/202507/20250709161955418.jpg','https://www.shexianwahuanggong.com/upload/202507/20250709160619267.jpg','https://www.shexianwahuanggong.com/upload/202507/20250709155540569.jpg'],
+          description: '娲皇宫是传说中女娲“炼石补天”之处，我国最大的女娲祭祀地。',
+          details: '娲皇宫始建于北齐，距今已有1400多年历史。主体建筑悬空而建。',
+          hours: '08:00-17:30', priceText: '70元/人（旺季）', durationText: '3小时',
+          features: ['华夏祖庙', '女娲补天传说地', '北齐悬空建筑'] }
+    ];
+
+    const foodCategories = [
+        { name: '🏔️ 承德 · 皇家味道', foods: [
+            { name: '承德凉粉', fullDesc: '起源：清朝康熙年间，承德避暑山庄御膳房为解暑而创。特点：绿豆淀粉制作，配麻酱、蒜泥，清凉爽口。' },
+            { name: '御土荷叶鸡', fullDesc: '起源：康熙皇帝狩猎时御厨用荷叶黄土烤鸡。特点：荷叶清香，鸡肉鲜嫩多汁。' },
+            { name: '杏仁露', fullDesc: '起源：承德盛产野山杏，民间自古饮用。特点：香浓顺滑，润肺止咳。' },
+            { name: '满族八大碗', fullDesc: '起源：满族传统宴席，清朝宫廷御宴。特点：八种烹饪技法，口味醇厚。' }
+        ] },
+        { name: '🏰 秦皇岛 · 山海鲜味', foods: [
+            { name: '山海关荤锅', fullDesc: '起源：明代守军为御寒驱湿而创。特点：铜锅炭火，五花肉、酸菜、海鲜同煮，汤汁浓郁。' },
+            { name: '桲椤叶饼', fullDesc: '起源：戚继光驻军时发明。特点：桲椤叶包裹玉米面皮和馅料，清香独特。' },
+            { name: '北戴河皮皮虾', fullDesc: '起源：海滨渔民传统吃法。特点：肉质鲜嫩，清蒸或椒盐。' },
+            { name: '海鲜大馅饺子', fullDesc: '起源：渔民将新鲜海产剁馅包饺子。特点：每个含整只虾仁，鲜美多汁。' }
+        ] },
+        { name: '💧 保定 · 白洋淀水乡风味', foods: [
+            { name: '白洋淀全鱼宴', fullDesc: '起源：白洋淀渔家传统。特点：一鱼多吃，技法多样，原汁原味。' },
+            { name: '白洋淀咸鸭蛋', fullDesc: '起源：淀边百姓用黄泥腌制。特点：蛋黄红润，油脂丰富，咸香适口。' },
+            { name: '炖杂鱼', fullDesc: '起源：渔民将小鱼混合炖煮。特点：肉质细嫩，汤汁浓稠，乡土气息浓厚。' }
+        ] },
+        { name: '⛰️ 保定/石家庄 · 太行山珍', foods: [
+            { name: '缸炉烧饼', fullDesc: '起源：太行山区百姓利用陶缸烤制。特点：芝麻焦香，层层起酥。' },
+            { name: '古月豆腐', fullDesc: '起源：平山县古月镇百年技艺，非遗。特点：酸浆点制，豆香浓郁，久煮不烂。' },
+            { name: '腌肉面', fullDesc: '起源：太行山区百姓为保存猪肉而发明。特点：腌肉肥而不腻，手工面条筋道。' }
+        ] },
+        { name: '🏯 唐山 · 京东美食', foods: [
+            { name: '遵化板栗', fullDesc: '起源：明清皇家贡品。特点：果实饱满，甘甜软糯。' },
+            { name: '东陵糕点', fullDesc: '起源：清代东陵祭祀御膳糕点。特点：酥松香甜，宫廷风味。' },
+            { name: '饹馇', fullDesc: '起源：慈禧太后赐名。特点：绿豆面薄饼，可炸可炒。' }
+        ] },
+        { name: '🌄 邯郸 · 太行风情', foods: [
+            { name: '涉县核桃', fullDesc: '起源：栽培历史超两千年，明清贡品。特点：皮薄肉厚，补脑益智。' },
+            { name: '涉县花椒', fullDesc: '起源：涉县山区自古盛产。特点：麻味纯正，香气持久。' },
+            { name: '小米焖饭', fullDesc: '起源：涉县农家传统。特点：小米软糯，锅巴香脆。' }
+        ] }
+    ];
+
+    const hotels = [
+        { name: '承德避暑山庄宾馆', location: '承德避暑山庄景区内', price: '¥480起', distance: '景区内', desc: '位于避暑山庄内，推窗即景，古典园林风格，提供皇家御膳体验。', img: 'https://picsum.photos/id/104/400/300', rating: '4.8分' },
+        { name: '山海关古城民宿', location: '山海关古城西大街', price: '¥280起', distance: '步行5分钟至景区', desc: '明清风格院落，老板热情，可品尝地道荤锅。', img: 'https://picsum.photos/id/15/400/300', rating: '4.6分' },
+        { name: '白洋淀荷花大观园酒店', location: '安新县白洋淀景区内', price: '¥350起', distance: '景区内', desc: '临水而居，夏季荷花环绕，含夜游船票。', img: 'https://picsum.photos/id/96/400/300', rating: '4.5分' },
+        { name: '清东陵景区酒店', location: '遵化市清东陵景区入口', price: '¥320起', distance: '景区门口', desc: '中式庭院，提供特色东陵糕点。', img: 'https://picsum.photos/id/30/400/300', rating: '4.7分' },
+        { name: '北戴河海滨度假酒店', location: '北戴河区中海滩路', price: '¥580起', distance: '步行3分钟至海滩', desc: '海景房，含自助早餐，步行可达鸽子窝公园。', img: 'https://picsum.photos/id/58/400/300', rating: '4.9分' },
+        { name: '野三坡百里峡客栈', location: '涞水县野三坡百里峡景区旁', price: '¥260起', distance: '步行2分钟', desc: '农家小院，烤全羊特色，老板可提供游览建议。', img: 'https://picsum.photos/id/31/400/300', rating: '4.5分' },
+        { name: '西柏坡红色主题酒店', location: '平山县西柏坡纪念馆旁', price: '¥220起', distance: '步行1分钟', desc: '红色文化主题，简洁舒适，免费提供讲解服务。', img: 'https://picsum.photos/id/29/400/300', rating: '4.4分' },
+        { name: '娲皇宫山景民宿', location: '涉县娲皇宫景区南门', price: '¥190起', distance: '景区入口', desc: '山景房，可远眺女娲像，提供农家菜。', img: 'https://picsum.photos/id/91/400/300', rating: '4.3分' }
+    ];
+
+    const sortedAttractions = [...attractions].sort((a,b) => b.hot - a.hot);
+
+    function renderRanking() {
+        const container = document.getElementById('rankingList');
+        if (!container) return;
+        container.innerHTML = sortedAttractions.map((item, idx) => `
+            <div class="ranking-item" data-page="${item.id}">
+                <div class="ranking-rank">${idx + 1}</div>
+                <div class="ranking-name">${item.name}</div>
+                <div class="ranking-hot">${item.hot} 分</div>
+                <div class="ranking-traffic">${item.traffic}</div>
+            </div>
+        `).join('');
+        document.querySelectorAll('#rankingList .ranking-item').forEach(el => {
+            el.addEventListener('click', () => showPageWithHash(el.dataset.page));
+        });
+    }
+
+    function renderDropdown() {
+        const dropdown = document.getElementById('rankingDropdown');
+        dropdown.innerHTML = sortedAttractions.map(item => `<a data-page="${item.id}">${item.name}</a>`).join('');
+        dropdown.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => showPageWithHash(link.dataset.page));
+        });
+    }
+
+    function renderFeatured() {
+        const grid = document.getElementById('featuredGrid');
+        grid.innerHTML = sortedAttractions.slice(0, 4).map(item => `
+            <div class="featured-card" data-page="${item.id}">
+                <img src="${withVersion(item.img)}" alt="${item.name}" onerror="${fallbackAttr('https://picsum.photos/id/1/400/300')}">
+                <div class="featured-card-content">
+                    <h3>${item.name}</h3>
+                    <p>推荐指数：${item.hot}分 | 日均客流：${item.traffic}</p>
+                </div>
+            </div>
+        `).join('');
+        grid.querySelectorAll('.featured-card').forEach(card => {
+            card.addEventListener('click', () => showPageWithHash(card.dataset.page));
+        });
+    }
+
+    function renderFoodPage() {
+        const container = document.getElementById('foodPageContent');
+        let html = '';
+        foodCategories.forEach(cat => {
+            html += `<div class="food-category"><h3>${cat.name}</h3><div class="food-grid-page">`;
+            cat.foods.forEach(food => {
+                html += `<div class="food-card"><h4>${food.name}</h4><p>${food.fullDesc}</p></div>`;
+            });
+            html += `</div></div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function renderPlanCheckbox() {
+        const container = document.getElementById('attractionsCheckbox');
+        container.innerHTML = attractions.map(attr => `
+            <label>
+                <input type="checkbox" value="${attr.id}" data-duration="${attr.duration}" data-price="${attr.price}">
+                ${attr.name} (时长:${attr.duration}h, 门票:¥${attr.price})
+            </label>
+        `).join('');
+        const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(cb => cb.addEventListener('change', updatePlanning));
+        updatePlanning();
+    }
+
+    function updatePlanning() {
+        const selected = [];
+        document.querySelectorAll('#attractionsCheckbox input:checked').forEach(cb => {
+            const id = cb.value;
+            const attr = attractions.find(a => a.id === id);
+            if (attr) selected.push(attr);
+        });
+        const totalTime = selected.reduce((sum, a) => sum + a.duration, 0);
+        const totalPrice = selected.reduce((sum, a) => sum + a.price, 0);
+        document.getElementById('calcResult').innerHTML = `
+            <p>✅ 已选择 ${selected.length} 个景点</p>
+            <p>⏱️ 预计总游玩时间：${totalTime} 小时</p>
+            <p>💰 预计门票总费用：¥${totalPrice}</p>
+        `;
+    }
+
+    function presetRoute(type) {
+        const checkboxes = document.querySelectorAll('#attractionsCheckbox input');
+        checkboxes.forEach(cb => cb.checked = false);
+        let ids = [];
+        if (type === 'heritage') ids = ['chengde', 'shanhai', 'qingdong'];
+        else if (type === 'coast') ids = ['shanhai', 'beidaihe', 'baiyang'];
+        else if (type === 'mountain') ids = ['yesanpo', 'wahuang', 'xibaipo'];
+        else if (type === 'clear') ids = [];
+        ids.forEach(id => {
+            const cb = document.querySelector(`#attractionsCheckbox input[value="${id}"]`);
+            if (cb) cb.checked = true;
+        });
+        updatePlanning();
+    }
+
+    function generateAmapRoute() {
+        const selected = [];
+        document.querySelectorAll('#attractionsCheckbox input:checked').forEach(cb => {
+            const id = cb.value;
+            const attr = attractions.find(a => a.id === id);
+            if (attr) selected.push(attr);
+        });
+        if (selected.length === 0) {
+            alert('请先勾选要游览的景点');
+            return;
+        }
+        const keywords = selected.map(a => a.name).join(' ');
+        const amapUrl = `https://uri.amap.com/search?keyword=${encodeURIComponent(keywords)}&callnative=1`;
+        window.open(amapUrl, '_blank');
+    }
+
+    function renderHotelPage() {
+        const grid = document.getElementById('hotelGrid');
+        grid.innerHTML = hotels.map(hotel => `
+            <div class="hotel-card" data-name="${hotel.name}" data-location="${hotel.location}">
+                <img class="hotel-img" src="${withVersion(hotel.img)}" alt="${hotel.name}" onerror="${fallbackAttr('https://pics0.baidu.com/feed/79f0f736afc379312d28a73d8bf1e95443a91123.jpeg@f_auto?token=ae2c417e29553d1d57f6ebed904b74b0')}">
+                <div class="hotel-content">
+                    <h3>${hotel.name}</h3>
+                    <div class="hotel-location">📍 ${hotel.location}</div>
+                    <div class="hotel-price">💰 ${hotel.price}</div>
+                    <div class="hotel-desc">📏 距离景区：${hotel.distance}</div>
+                    <div class="hotel-desc">⭐ ${hotel.rating}</div>
+                    <div class="hotel-desc">${hotel.desc}</div>
+                </div>
+            </div>
+        `).join('');
+        document.querySelectorAll('.hotel-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const name = card.dataset.name;
+                const location = card.dataset.location;
+                const searchKeyword = `${name} ${location}`;
+                const amapUrl = `https://uri.amap.com/search?keyword=${encodeURIComponent(searchKeyword)}&callnative=1`;
+                window.open(amapUrl, '_blank');
+            });
+        });
+    }
+
+    function generateDetailPages() {
+        const container = document.getElementById('detailContainer');
+        container.innerHTML = attractions.map(attr => `
+            <div id="${attr.id}Page" class="page">
+                <a class="back-link" data-page="home">&larr; 返回首页</a>
+                <div class="attraction-detail">
+                    <img class="detail-img" src="${withVersion(attr.detailImg)}" alt="${attr.name}" onerror="${fallbackAttr('https://picsum.photos/id/1/1200/500')}">
+                    <div class="detail-content">
+                        <h1>${attr.name}</h1>
+                        <p>${attr.description}</p>
+                        <p>${attr.details}</p>
+                        <div class="info-grid">
+                            <div class="info-item"><h3>开放时间</h3><p>${attr.hours}</p></div>
+                            <div class="info-item"><h3>门票价格</h3><p>${attr.priceText}</p></div>
+                            <div class="info-item"><h3>建议游玩时长</h3><p>${attr.durationText}</p></div>
+                        </div>
+                        <div class="gallery">
+                            <h2>📸 景区风光</h2>
+                            <div class="gallery-grid">
+                                ${attr.extraImages.map(img => `
+                                    <img src="${withVersion(img)}" alt="${attr.name}" onerror="${fallbackAttr('https://picsum.photos/id/1/400/300')}">
+                                `).join('')}
+                            </div>
+                        </div>
+                        <h2>✨ 特色亮点</h2>
+                        <ul>${attr.features.map(f => `<li>${f}</li>`).join('')}</ul>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        document.querySelectorAll('.back-link').forEach(link => {
+            link.addEventListener('click', () => showPageWithHash(link.dataset.page));
+        });
+    }
+
+    function initCollapsible() {
+        const toggleBtn = document.getElementById('rankingToggle');
+        const content = document.getElementById('rankingContent');
+        const icon = document.getElementById('toggleIcon');
+        let collapsed = false;
+        toggleBtn.addEventListener('click', () => {
+            if (collapsed) {
+                content.style.display = 'block';
+                icon.textContent = '▼';
+            } else {
+                content.style.display = 'none';
+                icon.textContent = '▶';
+            }
+            collapsed = !collapsed;
+        });
+    }
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const target = document.getElementById(pageId + 'Page');
+        if (target) target.classList.add('active');
+        else document.getElementById('homePage').classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function showPageWithHash(pageId) {
+        if (window.location.hash.slice(1) !== pageId) window.location.hash = pageId;
+        showPage(pageId);
+    }
+
+    function handleHash() {
+        const hash = window.location.hash.slice(1);
+        const validPages = ['home', 'food', 'plan', 'hotel', ...attractions.map(a => a.id), 'login'];
+        if (hash && validPages.includes(hash)) showPage(hash);
+        else showPage('home');
+    }
+
+    function bindDataPage() {
+        document.querySelectorAll('[data-page]').forEach(el => {
+            el.addEventListener('click', () => showPageWithHash(el.dataset.page));
+        });
+    }
+
+    function initLogin() {
+        const form = document.getElementById('loginForm');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const pwd = document.getElementById('password').value;
+            if (username && pwd) alert(`欢迎回来，${username}！\n（演示登录，无后端验证）`);
+            else alert('请输入用户名和密码');
+        });
+        document.getElementById('registerLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('注册功能暂未开放，请使用任意账号登录体验。');
+        });
+    }
+
+    function initHeroMedia() {
+        const heroVideo = document.getElementById('heroVideo');
+        const heroVideoSource = document.getElementById('heroVideoSource');
+        const videoPlayMask = document.getElementById('videoPlayMask');
+
+        if (!heroVideo || !heroVideoSource) return;
+
+        heroVideoSource.src = withVersion('https://video.699pic.com/videos/ll/vt/hj/llvTHjFv6kLXD23debW4OyWZwJxa_10s.mp4');
+
+        const poster = heroVideo.getAttribute('poster');
+        if (poster) {
+            heroVideo.poster = withVersion(poster);
+        }
+
+        heroVideo.load();
+
+        const tryPlay = async () => {
+            try {
+                heroVideo.muted = true;
+                await heroVideo.play();
+                if (videoPlayMask) videoPlayMask.classList.add('hidden');
+            } catch (e) {
+                console.log('自动播放失败，等待用户点击/触摸后播放', e);
+                if (videoPlayMask) videoPlayMask.classList.remove('hidden');
+            }
+        };
+
+        tryPlay();
+
+        const firstTouchPlay = async () => {
+            try {
+                await heroVideo.play();
+                if (videoPlayMask) videoPlayMask.classList.add('hidden');
+            } catch (e) {}
+            document.removeEventListener('touchstart', firstTouchPlay);
+        };
+
+        document.addEventListener('touchstart', firstTouchPlay, { passive: true });
+
+        if (videoPlayMask) {
+            videoPlayMask.addEventListener('click', async () => {
+                try {
+                    heroVideo.muted = false;
+                    await heroVideo.play();
+                    videoPlayMask.classList.add('hidden');
+                } catch (e) {
+                    alert('视频播放失败，请检查视频文件路径是否正确，或将视频转为 H.264 编码的 MP4。');
+                }
+            });
+        }
+
+        heroVideo.addEventListener('playing', () => {
+            if (videoPlayMask) videoPlayMask.classList.add('hidden');
+        });
+
+        heroVideo.addEventListener('pause', () => {
+            if (videoPlayMask) videoPlayMask.classList.remove('hidden');
+        });
+
+        heroVideo.addEventListener('error', () => {
+            console.log('视频加载失败，请检查 hebei_wenlv_promo.mp4 是否存在且编码兼容手机');
+            if (videoPlayMask) videoPlayMask.classList.remove('hidden');
+        });
+    }
+
+    function init() {
+        initHeroMedia();
+        renderRanking();
+        renderDropdown();
+        renderFeatured();
+        renderFoodPage();
+        renderPlanCheckbox();
+        renderHotelPage();
+        generateDetailPages();
+        initCollapsible();
+        bindDataPage();
+        window.addEventListener('hashchange', handleHash);
+        if (window.location.hash) handleHash();
+        else showPageWithHash('home');
+        initLogin();
+
+        const routeBtn = document.getElementById('generateRouteBtn');
+        if (routeBtn) routeBtn.addEventListener('click', generateAmapRoute);
+
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', () => presetRoute(btn.dataset.preset));
+        });
+    }
+
+    init();
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./service-worker.js')
+                .then(() => console.log('Service Worker 注册成功'))
+                .catch(err => console.log('Service Worker 注册失败', err));
+        });
+    }
+</script>
+</body>
+</html>
