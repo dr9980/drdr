@@ -3,3 +3,6 @@ node_modules/
 
 # Logs and scratch output
 *.log
+
+# Downloaded installers - not source
+_downloads/
