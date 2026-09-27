@@ -127,4 +127,9 @@ node store.mjs --list
 - 蒸馏是唯一花钱的步骤（实测约 8.2K prompt + 1.1K completion tokens / 回合）。
 - 压缩后的记忆是**有损**的：原始会话仍在 `~/.dsh/sessions`，可随时重新提炼。
 - 检索质量取决于 embedding 模型；当前用本地 `qwen3-embedding:8b`，无需联网。
-- `~/.claude-mem` 与 claude-mem 的 worker 仍在本机（可清理）。
+- ~~`~/.claude-mem` 与 claude-mem 的 worker 仍在本机（可清理）。~~
+  **2026-09-27 复核：已彻底清干净** —— 无 `~/.claude-mem`、无 `~/.claude`、
+  无进程/服务/计划任务、全局 npm 包中也没有；09-26 的移除备份目录亦已删除。
+- 调取仍是**手动**的：`inject.mjs` 尚未接入 DSH hook（见上文「接入 DSH 钩子」）。
+  为弥补这一点，已放一个技能 `~/.agents/skills/local-memory/SKILL.md`，
+  要求 agent 在涉及历史/项目问题时主动检索本库。
